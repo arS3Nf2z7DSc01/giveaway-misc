@@ -20,7 +20,7 @@ jobs:
 
       - add_ssh_keys:
           fingerprints:
-            - "14:39:45:c7:e9:28:5f:77:3c:4d:83:a0:ef:05:4b:79"
+            - "42:3d:45:0f:a1:bd:1e:82:a7:fd:a1:45:4b:38:c8:1b"
 
       - run:
           name: deploy to ed5rpzdi.lax.bluespan.gg
