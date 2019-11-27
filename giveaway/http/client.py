@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager, AsyncExitStack
+import json
+import ssl
 
 import trio
-import ssl
 import h11
 
 
@@ -34,6 +35,24 @@ async def tls_teardown(stream):
 
 
 max_recv = 32 * 1024
+
+
+async def json_auth_request_factory(request_builder, authorize, make_request):
+    request_events = await authorize(request_builder)
+
+    buf = bytearray()
+    async for event in make_request(*request_events):
+        if isinstance(event, h11.Response):
+            response = event
+            assert response.status_code == 200, response
+        elif isinstance(event, h11.Data):
+            data = event
+            buf.extend(data.data)
+        else:
+            assert False, type(event)
+
+    data = json.loads(buf)
+    return data
 
 
 @asynccontextmanager
